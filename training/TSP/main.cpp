@@ -1,60 +1,49 @@
-#include <bits/stdc++.h>
-
+#include<bits/stdc++.h>
+#include<iostream>
 using namespace std;
-const int N = 100;
 int n;
-int c[N][N];
-int cmin;
 int f, f_min;
-int xmin[N];
-bool visited[N];
-int x[N];
-void solution() {
-    if (f + c[x[n]][x[0]] < f_min) f_min = f + c[x[n]][x[0]];
-}
+bool visited[16];
+int cmin = 1e9;
+int a[16][16];
+int t[16];
 
-bool check(int v, int k) {
-    return !visited[v];
-}
-
-void Try(int k) {
-    for (int v = 1; v <= n; v++) {
-        if (check(v, k)) {
-            x[k] = v;
-            visited[v] = true;
-            f = f + c[x[k - 1]][x[k]];
-            if (k == n) solution();
-            else {
-                if (f + (n + 1 - k) * cmin < f_min) Try(k + 1);
+void solution(int k) {
+    for (int v =1; v <= n; v++) {
+        if (!visited[v]) {
+            t[k] = v;
+            visited[v] = 1;
+            f += a[t[k-1]][v];
+            if (k == n) {
+                if (f_min > f + a[v][0]) f_min = f + a[v][0];
+            }else {
+                if (f + cmin * (n + 1 - k) < f_min) solution(k+1);
             }
-            visited[v] = false;
-            f = f - c[x[k - 1]][x[k]];
+            f -= a[t[k-1]][v];
+            visited[v] = 0;
         }
     }
 }
+int main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    f = 0;
+    f_min = 1e9;
+    memset(t, 0, sizeof t);
+    memset(visited, 0, sizeof visited);
 
-void solve() {
-    for (int v = 1; v <= n; v++) visited[v] = false;
-    x[0] = 0;
-    f = 0; f_min = 1e9;
-    Try(1);
-    cout << f_min << endl;
-}
-
-void input() {
     cin >> n;
-    cmin = 1e9;
-    for (int i = 0; i <= n; i++)
-        for (int j = 0; j <= n; j++)
-        {
-            int val;
-            cin >> val;
-            c[i][j] = val;
-            if (i != j && cmin > c[i][j]) cmin = c[i][j];
+    for (int i=0; i<=n; i++) {
+        for(int j =0; j<=n; j++) {
+            cin >> a[i][j];
+            if (i != j && a[i][j] < cmin) cmin = a[i][j];
         }
-}
-
-int main() {
-    input();
-    solve();
+    }
+    solution(1);
+    for (int i =0; i<= n; i++) {
+        cout << t[i] << " ";
+    }
+    cout << endl;
+    cout << f_min << endl;
+    
 }
