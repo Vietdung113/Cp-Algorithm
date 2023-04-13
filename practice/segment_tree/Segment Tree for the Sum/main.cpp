@@ -5,7 +5,7 @@ using namespace std;
 const int N = 1e5 +5;
 
 int a[N];
-int st[4 * N];
+long long st[4 * N];
 
 
 void build(int id, int l, int r, int i, int v) {
@@ -14,7 +14,7 @@ void build(int id, int l, int r, int i, int v) {
     }
     if (l == r) 
     {
-        st[id] = v ;
+        st[id] = v;
         return;
     }
     int mid = (l + r) / 2;
@@ -25,7 +25,7 @@ void build(int id, int l, int r, int i, int v) {
     st[id] = st[id*2 + 2] + st[2*id+1];
 }
 
-int get_sum(int id, int l, int r, int u, int v) {
+long long get_sum(int id, int l, int r, int u, int v) {
     // cout << id << " " << l << " " << r << " " << u << " " << v << endl;
     if( v < l || r < u) return 0;
     if (u <= l && r <=v ) return st[id];
@@ -35,7 +35,6 @@ int get_sum(int id, int l, int r, int u, int v) {
 
 int main() {
     int n,m;
-    memset(st, sizeof st, 0);
     cin >> n >> m;
     int v;
     for(int i = 0; i < n; i++) {
