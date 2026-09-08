@@ -1,0 +1,63 @@
+# https://codeforces.com/problemset/problem/339/D
+import sys
+from os.path import join, dirname, abspath
+
+def build(st, arr, node, l, r, d):
+    if l == r:
+        st[node] = arr[l]
+        return
+    
+    mid = (l + r) // 2
+    build(st, arr, node * 2 + 1, l, mid, d + 1)
+    build(st, arr, node * 2 + 2, mid + 1, r, d + 1)
+
+    if d % 2 != 0:
+        st[node] = st[node * 2 + 1] | st[node * 2 + 2]
+    else:
+        st[node] = st[node * 2 + 1] ^ st[node * 2 + 2]
+
+
+def update(st, node, l, r, pos, v, d):
+    if l == r:
+        st[node] = v
+        return
+    mid = (l + r) // 2
+
+    if pos <= mid:
+        update(st, node * 2 + 1, l, mid, pos, v, d+1)
+    else:
+        update(st, node * 2 + 2, mid + 1, r, pos, v, d+1)
+
+    if d % 2 != 0:
+        st[node] = st[node * 2 + 1] | st[node * 2 + 2]
+    else:
+        st[node] = st[node * 2 + 1] ^ st[node * 2 + 2]
+
+
+def show(st, n):
+    level = [0]
+    for d in range(n + 1):
+        print(f"d={d}: {[st[i] for i in level]}")
+        level = [c for i in level for c in (i*2+1, i*2+2)]
+
+
+if __name__ == '__main__':
+    sys.stdin = open(join(dirname(abspath(__file__)), "input.txt"), "r")
+    n, m = map(int, input().split())
+    size = 1 << n
+
+    st = [0] * 4 * size
+    arr = list(map(int, input().split()))
+
+
+    build(st, arr, 0, 0, size - 1, 0)
+
+    # show(st, n)
+    d = 0 if n % 2 == 0 else 1
+    for i in range(m):
+        p, b = map(int, input().split())
+        update(st, 0, 0, size - 1, p - 1, b, d)
+        print(st[0])
+
+
+
